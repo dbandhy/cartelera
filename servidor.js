@@ -18,7 +18,7 @@ servidor.get('/carteleraRandom', async (peticion, respuesta) => {
      const maximo = cartelera.length;
     const randomNumber = generarNumero(1, maximo);
     const carteleraRandom = await archivo.getById(randomNumber);
-    respuesta.send(carteleraRandom)
+    respuesta.json(carteleraRandom)
 });
 
 const generarNumero =
