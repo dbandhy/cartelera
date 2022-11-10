@@ -1,84 +1,106 @@
-const fs = require('fs')
+const fs = require("fs");
 
-const { randomUUID } = require('crypto')
-
-
-class Contenedor {
-    #elementos
+class Archivo {
     constructor() {
-        this.#elementos = []
+        this.filepath = './peliculas.txt'
     }
 
-    guardar(elemento) {
-        this.#elementos.push(elementos)
+    async leer () {
+
+        try {
+            const peliculas = await fs.promises.readFile(this.filepath, 'utf-8')
+            return JSON.parse(peliculas);
+        } catch (err) {
+            return [];
+        }
+  
     }
 
-    recuperarTodo() {
-        return this.#elementos
+    async borrar () {
+        await fs.promises.unlink(this.filepath);
+    }
+    
+ 
+    async guardar (titulo, precio, thumbnail) {
+        try {
+            const peliculas = await this.leer()
+            const nuevaPelicula = {
+                titulo,
+                precio,
+                thumbnail,
+                id: peliculas.length + 1,
+            };
+            peliculas.push(nuevaPelicula);
+            await fs.promises.writeFile(this.filepath, JSON.stringify(peliculas, null, 2));
+            return `Se ha agregado pelicula ${titulo}`;
+        } catch (err) {
+            console.log('error'. err);
+        }
+
     }
 
-    obtenerID() {
-        return id
-    }
+    async getById(id) {
+
+        try {
+        
+        let peliculasGuardados = await fs.promises.readFile(this.filepath,"utf-8")
+        const arrayDePeliculas = JSON.parse(peliculasGuardados);
+        let peliFound = arrayDePeliculas.find((ele) =>
+                ele.id === id ? ele : undefined
+        
+        );
+         //await fs.promises.writeFile(this.filepath, JSON.stringify(peliFound))
+        
+        console.log(peliFound);
+        } catch (error) {
+        
+        console.log(error);
+            }
+        
+        }
+
+        async deleteById(id) {
+            //await fs.promises.unlink(this.filepath)
+            try{
+
+              let peliculasCompletas = await fs.promises.readFile(this.filepath, "utf-8")
+              let peliculaConId = JSON.parse(peliculasCompletas);
+            
+              let peliculaSinId = peliculaConId.filter(nuevaPelicula => nuevaPelicula.id != id  ) //-1
+              await fs.promises.writeFile(this.filepath, JSON.stringify(peliculaSinId))
+              //console.log(peliculaSinId)  
+                   
+            } catch (error) {
+            
+            console.log(error, "no funciona ");
+            
+            }
+            
+            }
+    
 }
 
-class ContenedorArchivo {
-    #elementos
-    #ruta
-    constructor(ruta) {
-        this.#ruta = ruta
-        this.#elementos = []
-        
-    }
 
-    async guardar(elemento) {
-        this.#elementos.push(elemento)
-        await fs.promises.writeFile(this.#ruta, JSON.stringify(this.#elementos))
-    }
+const main = async () => {
+    const manejadorDeArchivos = new Archivo();
+  // console.log("Leer: ", await manejadorDeArchivos.leer());
+  // console.log(await manejadorDeArchivos.guardar("Argentina 1985", 100, "immagen.png"));
+  // console.log(await manejadorDeArchivos.guardar("Titanic", 200, "imagen.png"));
+  // console.log(await manejadorDeArchivos.guardar("Documental Mundial", 300, "poster.png"));
+  // console.log("Leer: ", await manejadorDeArchivos.leer());
+  // console.log( await manejadorDeArchivos.getById(2));
+  //  console.log( await manejadorDeArchivos.deleteById(2));
+  //  console.log("Leer: ", await manejadorDeArchivos.leer())
+  //  console.log( await manejadorDeArchivos.deleteById(1));
+  //  console.log("Leer: ", await manejadorDeArchivos.leer())
 
-    async recuperarTodo() {
-        this.#elementos =  JSON.parse(await fs.promises.readFile(this.#ruta, 'utf-8'))
-        return this.#elementos
-    }
-
-    async leerTodo() {
-        await fs.promises.writeFile(this.#ruta, JSON.stringify(this.#elementos))
-        JSON.parse(await fs.promises.readFile(this.#ruta, 'utf-8'))
-    }
-
-    // async recuperarId() {
+//     setTimeout( async () => {
+//         await manejadorDeArchivos.borrar();
+//     }, 5000);
     
+//     console.log("Leer: ", await manejadorDeArchivos.leer());
 }
 
-async function test() {
+main();
 
-    const rutaArchivo = './elementos.txt'
-    await fs.promises.writeFile(rutaArchivo, '[]')
-    
-    
-    const contenedor = new ContenedorArchivo (rutaArchivo)
-
-    await contenedor.guardar({
-        id: randomUUID(),
-        pelicula: "Argentina 1985"
-    })
-    
-    await contenedor.guardar({
-        id: randomUUID(),
-        pelicula: "Contactados"
-        
-    })
-
-    await contenedor.guardar({
-        id: randomUUID(),
-        pelicula: "Hollywood1212"
-        
-    })
-
-    await contenedor.recuperarTodo()
-    await contenedor.leerTodo()
-    // await contenedor.recuperarId()
-    
-}
-
-test()
+module.exports = Archivo;

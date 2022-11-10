@@ -1,0 +1,20 @@
+[
+  {
+    "titulo": "Documental Mundial",
+    "precio": 300,
+    "thumbnail": "poster.png",
+    "id": 1
+  },
+  {
+    "titulo": "Argentina 1985",
+    "precio": 100,
+    "thumbnail": "immagen.png",
+    "id": 2
+  },
+  {
+    "titulo": "Titanic",
+    "precio": 200,
+    "thumbnail": "imagen.png",
+    "id": 3
+  }
+]
