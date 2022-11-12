@@ -15,7 +15,7 @@ servidor.get('/cartelera', async (peticion, respuesta) => {
 
 servidor.get('/carteleraRandom', async (peticion, respuesta) => {
     const cartelera = await archivo.leer();
-     const maximo = cartelera.length;
+    const maximo = cartelera.length;
     const randomNumber = generarNumero(1, maximo);
     const carteleraRandom = await archivo.getById(randomNumber);
     respuesta.json(carteleraRandom)
